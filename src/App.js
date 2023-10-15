@@ -1,62 +1,107 @@
-// import logo from "./logo.svg";
+// // import logo from "./logo.svg";
+// import "./App.css";
+// import React, { useState } from "react";
+// import TransferComp from "./Transfer";
+
+// function App() {
+//   const [name, setName] = useState();
+//   const [email, setEmail] = useState();
+
+//   const handleInputChanges = (e) => {
+//     const { name, value } = e.target;
+//     if (name === "name") {
+//       setName(value);
+//     } else if (name === "email") {
+//       setEmail(value);
+//     }
+//   };
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     alert(`Name: ${name}\n Email: ${email}`);
+//   };
+//   return (
+//     <div className="App">
+//       {/* <h1>React input Events and forms </h1> */}
+//       {/* <form onSubmit={handleSubmit}>
+//         <label>
+//           name :
+//           <input
+//             type="text"
+//             name="name"
+//             value={name}
+//             onChange={handleInputChanges}
+//           />
+//         </label>
+//         <br />
+//         <label>
+//           Email :
+//           <input
+//             type="email"
+//             name="email"
+//             value={email}
+//             onChange={handleInputChanges}
+//           />
+//         </label>
+//         <br />
+//         <button type="submit">Submit</button>
+//       </form>
+//       <p>Name: {name}</p>
+//       <p>Email: {email}</p> */}
+//       {/* <input
+//         type="text"
+//         placeholder="Enter your text"
+//         value={name}
+//         onChange={handleInputChanges}
+//       />
+//       <p> hello, {name} !!</p> */}
+//       {/* <MyComponent />
+//       <HelloWorld /> */}
+//       <TransferComp />
+//     </div>
+//   );
+// }
+
+// export default App;
+
 import "./App.css";
+import Transfer from "./Transfer";
+import Receipt from "./Reciept";
 import React, { useState } from "react";
-// import MyComponent from "./MyComponent";
-// import HelloWorld from "./HelloWorld";
 
 function App() {
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [transactionData, setTransactionData] = useState({});
 
-  const handleInputChanges = (e) => {
-    const { name, value } = e.target;
-    if (name === "name") {
-      setName(value);
-    } else if (name === "email") {
-      setEmail(value);
+  const handleTransfer = ({ amount, from, to }) => {
+    if (amount < 0 || amount === 0 || amount === "") {
+      alert("Enter valid amount");
+      return;
     }
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(`Name: ${name}\n Email: ${email}`);
+    setTransactionData({
+      amount,
+      from,
+      to,
+      transactionDate: new Date().toDateString(),
+      transactionID:
+        "0xb4bc263278d3f77a652a8d73a6bfd8ec0ba1a63923bbb4f38147fb8a943da26d",
+    });
+    setIsModalOpen(true);
   };
   return (
     <div className="App">
-      <h1>React input Events and forms </h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          name :
-          <input
-            type="text"
-            name="name"
-            value={name}
-            onChange={handleInputChanges}
-          />
-        </label>
-        <br />
-        <label>
-          Email :
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={handleInputChanges}
-          />
-        </label>
-        <br />
-        <button type="submit">Submit</button>
-      </form>
-      <p>Name: {name}</p>
-      <p>Email: {email}</p>
-      {/* <input
-        type="text"
-        placeholder="Enter your text"
-        value={name}
-        onChange={handleInputChanges}
+      <Transfer
+        openReceipt={({ amount, from, to }) =>
+          handleTransfer({ amount, from, to })
+        }
       />
-      <p> hello, {name} !!</p> */}
-      {/* <MyComponent />
-      <HelloWorld /> */}
+      {isModalOpen && (
+        <Receipt
+          closeModal={() => {
+            setIsModalOpen(false);
+          }}
+          receiptData={transactionData}
+        />
+      )}
     </div>
   );
 }
